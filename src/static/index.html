@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物の配置管理システム</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-map-marker-alt"></i> 物の配置管理システム</h1>
+            <p>祇園店の物の場所を簡単に検索・管理できます</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="search">
+                <i class="fas fa-search"></i> 検索
+            </button>
+            <button class="tab-btn" data-tab="locations">
+                <i class="fas fa-building"></i> 場所一覧
+            </button>
+            <button class="tab-btn" data-tab="add-item">
+                <i class="fas fa-plus"></i> アイテム追加
+            </button>
+            <button class="tab-btn" data-tab="import">
+                <i class="fas fa-file-excel"></i> データ取込
+            </button>
+        </nav>
+
+        <!-- 検索タブ -->
+        <div id="search" class="tab-content active">
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="アイテム名、場所、サブロケーションで検索...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <div id="searchResults" class="results-section">
+                <div class="welcome-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>検索キーワードを入力してアイテムを探してください</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 場所一覧タブ -->
+        <div id="locations" class="tab-content">
+            <div class="locations-grid" id="locationsGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> 読み込み中...
+                </div>
+            </div>
+        </div>
+
+        <!-- アイテム追加タブ -->
+        <div id="add-item" class="tab-content">
+            <div class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> 新しいアイテムを追加</h2>
+                <form id="addItemForm" class="item-form">
+                    <div class="form-group">
+                        <label for="itemName">アイテム名 *</label>
+                        <input type="text" id="itemName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="locationSelect">場所 *</label>
+                        <select id="locationSelect" required>
+                            <option value="">場所を選択してください</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subLocation">サブロケーション</label>
+                        <input type="text" id="subLocation" placeholder="例: A上段、中段1など">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantity">数量</label>
+                        <input type="number" id="quantity" value="1" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">備考</label>
+                        <textarea id="notes" placeholder="追加の情報があれば入力してください"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> 追加
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- データ取込タブ -->
+        <div id="import" class="tab-content">
+            <div class="form-section">
+                <h2><i class="fas fa-file-import"></i> Excelファイルからデータを取り込み</h2>
+                <div class="import-section">
+                    <div class="file-upload">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" style="display: none;">
+                        <button id="selectFileBtn" class="btn-secondary">
+                            <i class="fas fa-file-excel"></i> ファイルを選択
+                        </button>
+                        <span id="fileName" class="file-name"></span>
+                    </div>
+                    
+                    <button id="importBtn" class="btn-primary" disabled>
+                        <i class="fas fa-upload"></i> インポート実行
+                    </button>
+                    
+                    <div id="importResult" class="import-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">アイテム詳細</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editItemForm" class="item-form">
+                    <input type="hidden" id="editItemId">
+                    
+                    <div class="form-group">
+                        <label for="editItemName">アイテム名 *</label>
+                        <input type="text" id="editItemName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editLocationSelect">場所 *</label>
+                        <select id="editLocationSelect" required>
+                            <option value="">場所を選択してください</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editSubLocation">サブロケーション</label>
+                        <input type="text" id="editSubLocation">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editQuantity">数量</label>
+                        <input type="number" id="editQuantity" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editNotes">備考</label>
+                        <textarea id="editNotes"></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> 更新
+                        </button>
+                        <button type="button" id="deleteItemBtn" class="btn-danger">
+                            <i class="fas fa-trash"></i> 削除
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知 -->
+    <div id="notification" class="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
