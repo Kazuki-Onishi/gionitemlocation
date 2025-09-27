@@ -13,20 +13,17 @@ from src.routes.item import item_bp
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 
-# CORS設定
-CORS(app)
+# CORS設宁ECORS(app)
 
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(location_bp, url_prefix='/api')
 app.register_blueprint(item_bp, url_prefix='/api')
 
-# データベース設定
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
+# チE�Eタベ�Eス設宁Eapp.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-# モデルをインポート（テーブル作成のため）
-from src.models.location import Location
+# モチE��をインポ�Eト（テーブル作�Eのため�E�Efrom src.models.location import Location
 from src.models.item import Item
 
 with app.app_context():
@@ -50,4 +47,7 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug_flag = os.environ.get('FLASK_DEBUG', 'false').lower() in {'1', 'true', 'yes'}
+    app.run(host='0.0.0.0', port=port, debug=debug_flag)
+
