@@ -9,7 +9,6 @@ from src.models.user import db
 from src.routes.user import user_bp
 from src.routes.location import location_bp
 from src.routes.item import item_bp
-from src.routes.data_import import data_import_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
@@ -20,7 +19,6 @@ CORS(app)
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(location_bp, url_prefix='/api')
 app.register_blueprint(item_bp, url_prefix='/api')
-app.register_blueprint(data_import_bp, url_prefix='/api')
 
 # データベース設定
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
